@@ -33,7 +33,7 @@ export const initialEvents = [
   },
   {
     id: 4,
-    date:"2025-06-24",
+    date: "2025-06-24",
     startTime: "15:30",
     endTime: "17:00",
     color: "#06b6d4",

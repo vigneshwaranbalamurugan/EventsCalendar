@@ -141,6 +141,28 @@ const Calendar = () => {
   };
 
   const handleSaveEvent = () => {
+    const { date, startTime, endTime } = eventForm;
+    const newStart = timeToMinutes(startTime);
+    const newEnd = timeToMinutes(endTime);
+
+    // Filter out the event being edited (if editing)
+    const otherEvents = editingEvent
+      ? events.filter(e => e.id !== editingEvent.id && e.date === date)
+      : events.filter(e => e.date === date);
+
+    const hasOverlap = otherEvents.some(e => {
+      const existingStart = timeToMinutes(e.startTime);
+      const existingEnd = timeToMinutes(e.endTime);
+
+      // Check if new event overlaps with existing event
+      return newStart < existingEnd && newEnd > existingStart;
+    });
+
+    if (hasOverlap) {
+      alert("Oops! This time slot is already booked with another event. Please choose a different time.");
+      return;
+    }
+
     if (editingEvent) {
       setEvents(events.map(e =>
         e.id === editingEvent.id
@@ -154,6 +176,7 @@ const Calendar = () => {
       };
       setEvents([...events, newEvent]);
     }
+
     setShowEventModal(false);
   };
 

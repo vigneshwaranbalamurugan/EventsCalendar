@@ -9,6 +9,7 @@ const Calendar = () => {
   const [events, setEvents] = useState(initialEvents);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [showAllTodayEvents, setShowAllTodayEvents] = useState(false);
   const [expandedDates, setExpandedDates] = useState({});
   const [showEventModal, setShowEventModal] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
@@ -534,23 +535,42 @@ const Calendar = () => {
                 </div>
                 <h3 className="font-bold text-gray-900">Today's Events</h3>
               </div>
+
               <div className="space-y-3">
-                {getEventsForDate(today).slice(0, 3).map(event => (
-                  <div key={event.id} className="p-3 rounded-lg border-l-4 bg-gray-50"
-                    style={{ borderLeftColor: event.color }}>
-                    <div className="font-semibold text-sm text-gray-900">{event.title}</div>
-                    <div className="text-xs text-gray-600">
-                      {formatTime(event.startTime)} - {formatTime(event.endTime)}
-                    </div>
-                  </div>
-                ))}
-                {getEventsForDate(today).length === 0 && (
+                {getEventsForDate(today).length > 0 ? (
+                  <>
+                    {(showAllTodayEvents
+                      ? getEventsForDate(today)
+                      : getEventsForDate(today).slice(0, 3)
+                    ).map(event => (
+                      <div
+                        key={event.id}
+                        className="p-3 rounded-lg border-l-4 bg-gray-50"
+                        style={{ borderLeftColor: event.color }}
+                      >
+                        <div className="font-semibold text-sm text-gray-900">{event.title}</div>
+                        <div className="text-xs text-gray-600">
+                          {formatTime(event.startTime)} - {formatTime(event.endTime)}
+                        </div>
+                      </div>
+                    ))}
+
+                    {getEventsForDate(today).length > 3 && (
+                      <button
+                        onClick={() => setShowAllTodayEvents(prev => !prev)}
+                        className="text-xs text-blue-600 hover:underline"
+                      >
+                        {showAllTodayEvents
+                          ? 'Show less'
+                          : `Show ${getEventsForDate(today).length - 3} more`}
+                      </button>
+                    )}
+                  </>
+                ) : (
                   <div className="text-gray-500 text-sm italic">No events today</div>
                 )}
               </div>
             </div>
-
-
 
           </div>
         </div>
